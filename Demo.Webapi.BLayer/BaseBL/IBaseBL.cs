@@ -27,7 +27,7 @@ namespace Demo.Webapi.BLayer.BaseBL
         /// <param name="id"></param>
         /// <returns></returns>
         /// Xuân Đào (25/03/2023)
-        public T GetRecordById(Guid id);
+        public ServiceResult GetRecordById(Guid id);
 
         /// <summary>
         /// Lấy toàn bộ bản ghi

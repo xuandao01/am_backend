@@ -83,6 +83,7 @@ namespace Demo.Webapi.DL.BaseDL
                 string queryString = $"insert into {typeof(T).Name}";
                 string colName = "(";
                 string colValue = "(";
+                string newId = Guid.NewGuid().ToString();
                 var properties = typeof(T).GetProperties();
                 int i = 0;
                 foreach (var property in properties)
@@ -92,7 +93,6 @@ namespace Demo.Webapi.DL.BaseDL
                         colName += property.Name + ',';
                         if (i == 0)
                         {
-                            string newId = Guid.NewGuid().ToString();
                             colValue += $"'{newId}',";
                         }
                         else
@@ -135,7 +135,7 @@ namespace Demo.Webapi.DL.BaseDL
                 {
                     IsSuccess = true,
                     Message = Resource.createSuccess,
-                    Data = result,
+                    Data = newId,
                 };
             
             } catch (Exception ex)
@@ -329,13 +329,32 @@ namespace Demo.Webapi.DL.BaseDL
                 string selectOption = "*";
                 string joinOption = "";
                 string? optionalQuery = null;
-                if (typeof(T).Name == "receipt_payment") { 
-                    selectOption = "*, (select sum(rpd.amount) as \"total_amount\" from receipt_payment_detail rpd where rpd.rp_id = re_id)";
-                    joinOption = "left join supplier on account_id = supplier_id";
-                    optionalQuery = "select sum(rpd.amount) from receipt_payment_detail rpd;";
-                }
-                string queryString = $"select {selectOption} from {typeof(T).Name} {joinOption} order by {typeof(T).Name}.created_date desc limit {pageSize} offset {offset};";
+                string orderOption = "created_date desc";
+                string whereOption = "";
                 string getTotalRecord = $"select count(*) as \"Total record\" from {typeof(T).Name};";
+                if (typeof(T).Name == "receipt_payment")
+                {
+                    selectOption = "*, (select sum(rpd.amount) as \"total_amount\" from receipt_payment_detail rpd where rpd.rp_id = re_id)";
+                    joinOption = "left join supplier on account_id = supplier_id left join employee on cast(employee.employeeid as text) = receipt_payment.employee_id";
+                    optionalQuery = "select sum(rpd.amount) from receipt_payment_detail rpd;";
+                    orderOption = "re_ref_no desc";
+                }
+                if (keyWord != null && keyWord.Length > 0)
+                {
+                    var properties = typeof(T).GetProperties();
+                    int i = 0;
+                    foreach (var property in properties)
+                    {
+                        if (i == 0)
+                            whereOption += $"where cast({typeof(T).Name}.{property.Name} as text) ilike '%{keyWord}%'";
+                        else
+                            whereOption += $" or cast({typeof(T).Name}.{property.Name} as text) ilike '%{keyWord}%'";
+                        i++;
+                    }
+                    optionalQuery = "select sum(receipt_payment_detail.amount) from receipt_payment_detail inner join receipt_payment on rp_id = re_id " + whereOption;
+                    getTotalRecord = $"select count(*) as \"Total record\" from {typeof(T).Name} {whereOption};";
+                }
+                string queryString = $"select {selectOption} from {typeof(T).Name} {joinOption} {whereOption} order by {typeof(T).Name}.{orderOption} limit {pageSize} offset {offset};";
                 var sqlConection = GetOpenConnection();
                 // Thực hiện truy vấn
                 string excuteQuery = queryString + getTotalRecord;
@@ -393,21 +412,30 @@ namespace Demo.Webapi.DL.BaseDL
         /// <param name="id">id bản ghi cần tìm</param>
         /// <returns>Generic</returns>
         /// Xuân Đào (28/03/2023)
-        public T GetRecordById(Guid id)
+        public ServiceResult GetRecordById(Guid id)
         {
 
             // Chuẩn bị tên stored
-            string storedName = $"Proc_Get{typeof(T).Name}ById";
-            // Chuẩn bị tham số đầu vào
-            var param = new DynamicParameters();
-            param.Add($"{typeof(T).Name}Id", id);
+            string idField = $"{typeof(T).Name}_id";
+            string joinOption = "";
+            if (typeof(T).Name == "receipt_payment")
+            {
+                idField = "re_id";
+                joinOption = "left join supplier on account_id = supplier_id left join employee on cast(employee.employeeid as text) = receipt_payment.employee_id";
+            }
+            string queryString = $"Select * from {typeof(T).Name} {joinOption} where {idField} = '{id}'";
             // Kết nối tới db
             var mySqlConnection = GetOpenConnection();
             // Thực hiện gọi vào db chạy proc
-            var record = QueryFirstOrDefault(mySqlConnection, storedName, param, commandType: System.Data.CommandType.StoredProcedure);
+            var record = Query(mySqlConnection, queryString, commandType: System.Data.CommandType.Text);
             // Xử lý kết quả trả về
             mySqlConnection.Close();
-            return record;
+            return new ServiceResult
+            {
+                IsSuccess = true,
+                Message = "",
+                Data = record,
+            };
         }
 
         /// <summary>
@@ -427,7 +455,7 @@ namespace Demo.Webapi.DL.BaseDL
                     orderBy = "datalevel asc, accountnumber ";
                     orderSort = "asc";
                 } 
-                string queryString = $"select * from {typeof(T).Name} order by {orderBy} {orderSort}";
+                string queryString = $"select *, (select count (*) as \"total_record\" from {typeof(T).Name}) from {typeof(T).Name} order by {orderBy} {orderSort}";
                 // Kết nối tới db
                 var mySqlConnection = GetOpenConnection();
                 // Thực hiện gọi vào db chạy proc
@@ -507,7 +535,8 @@ namespace Demo.Webapi.DL.BaseDL
                     if (value == null)
                     {
                         excuteString += $"{propName}" + "=" + "null";
-                    } else
+                    } 
+                    else
                     {
                         if (property.PropertyType.Name.CompareTo("Int32") != 0)
                             excuteString += $"{propName}" + "=" + $"'{value}'";
@@ -517,7 +546,7 @@ namespace Demo.Webapi.DL.BaseDL
                 }
                 else if (i > 1)
                 {
-                    if (value == null || value.ToString().Length == 0)
+                    if ((value == null || value.ToString().Length == 0) && propName != "Created_Date" && propName != "Created_By" && propName != "CreatedBy" && propName != "ModifiedDate" && propName != "modified_date")
                     {
                         excuteString += $",{propName}" + "=" + "null";
                     }
@@ -525,7 +554,7 @@ namespace Demo.Webapi.DL.BaseDL
                     {
                         if (property.PropertyType.Name.CompareTo("Int32") != 0)
                         {
-                            if (propName == "ModifiedDate")
+                            if (propName == "ModifiedDate" || propName == "modified_date")
                             {
                                 excuteString += "," + $"{propName}" + "=" + $"'{new DateTime()}'";
                             }
@@ -540,11 +569,11 @@ namespace Demo.Webapi.DL.BaseDL
                 }
                 i++;
             }
-            excuteString += $" where {properties[0].Name} = {id};";
+            excuteString += $" where {properties[0].Name} = '{id}';";
             var mysqlConnection = GetOpenConnection();
-            var result = QueryFirstOrDefault(mysqlConnection, excuteString, commandType: CommandType.Text);
+            var result = Execute(mysqlConnection, excuteString, commandType: CommandType.Text);
             mysqlConnection.Close();
-            if (result == null)
+            if (result == 0)
             {
                 return null;
             }

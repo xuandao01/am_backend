@@ -174,6 +174,15 @@
   <data name="invalidField" xml:space="preserve">
     <value>Một số trường thông tin không hợp lệ</value>
   </data>
+  <data name="paymentExcelFile" xml:space="preserve">
+    <value>Thu_chi_tien_mat</value>
+  </data>
+  <data name="paymentExcelSheet" xml:space="preserve">
+    <value>THU CHI TIỀN MẶT</value>
+  </data>
+  <data name="paymentExcelTitle" xml:space="preserve">
+    <value>THU CHI TIỀN MẶT</value>
+  </data>
   <data name="updateFail" xml:space="preserve">
     <value>Cập nhật không thành công</value>
   </data>
@@ -185,6 +194,9 @@
   </data>
   <data name="userMsg.DuplicateEmployee" xml:space="preserve">
     <value>Mã nhân viên đã tồn tại</value>
+  </data>
+  <data name="userMsg.DuplicateReceiptPayment" xml:space="preserve">
+    <value>Số chứng từ đã tồn tại vui lòng kiểm tra lại</value>
   </data>
   <data name="userMsg.Exception" xml:space="preserve">
     <value>Có lỗi xảy ra, liên hệ MISA</value>

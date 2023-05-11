@@ -102,7 +102,7 @@ namespace Demo.Webapi.BLayer.BaseBL
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public T GetRecordById(Guid id)
+        public ServiceResult GetRecordById(Guid id)
         {
             return _baseDL.GetRecordById(id);
         }
@@ -154,14 +154,24 @@ namespace Demo.Webapi.BLayer.BaseBL
 
         public virtual List<ErrorResult> ValidateCustomize(T record)
         {
-            if (typeof(T).Name == "Account")
+            if (typeof(T).Name == "Account" || typeof(T).Name == "receipt_payment")
             {
                 List<ErrorResult> errList = new List<ErrorResult>();
                 Type type = typeof(T);
-                string code = type.GetProperty($"{type.Name}Number").GetValue(record).ToString();
+                string code = "";
+                if (typeof(T).Name == "receipt_payment")
+                {
+                    code = type.GetProperty("re_ref_no").GetValue(record).ToString();
+                } else if (typeof(T).Name == "Account")
+                {
+                    code = type.GetProperty($"{type.Name}Number").GetValue(record).ToString();
+                }
                 if (!CodeIsValid(code))
                 {
-                    errList.Add(new ErrorResult(ErrorCode.Duplicate, Resource.devMsg_DuplicateAccount, Resource.userMsg_DuplicateAccount, ""));
+                    if (typeof(T).Name == "Account")
+                        errList.Add(new ErrorResult(ErrorCode.Duplicate, Resource.devMsg_DuplicateAccount, Resource.userMsg_DuplicateAccount, ""));
+                    else if (typeof(T).Name == "receipt_payment")
+                        errList.Add(new ErrorResult(ErrorCode.Duplicate, Resource.devMsg_DuplicateAccount, Resource.userMsg_DuplicateReceiptPayment, ""));
                 }
                 return errList;
             }
@@ -171,6 +181,10 @@ namespace Demo.Webapi.BLayer.BaseBL
         public Boolean CodeIsValid(string code)
         {
             string queryString = $"Select * From {typeof(T).Name} Where {typeof(T).Name}number = {code}";
+            if (typeof(T).Name == "receipt_payment")
+            {
+                queryString = $"Select * From {typeof(T).Name} Where re_ref_no = '{code}'";
+            }
             var mysqlConnection = _baseDL.GetOpenConnection();
             var result = _baseDL.Query(mysqlConnection, queryString, commandType: CommandType.Text);
             if (result.Count() == 0) return true;

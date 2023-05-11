@@ -30,41 +30,41 @@ namespace Demo.Webapi.Common.Entities
 
         public Nullable<Guid> Dependency { get; set; }
 
-        public int FollowObject { get; set; }
+        public int? FollowObject { get; set; }
 
         public string? FollowObjectValue { get; set; }
 
-        public int FollowObjectTHCP { get; set; }
+        public int? FollowObjectTHCP { get; set; }
 
         public string? FollowObjectTHCPValue { get; set; }
 
-        public int FollowOrder { get; set; }
+        public int? FollowOrder { get; set; }
 
         public string? FollowOrderValue { get; set; }
 
-        public int FollowContract { get; set; }
+        public int? FollowContract { get; set; }
 
         public string? FollowContractValue { get; set; }
 
-        public int FollowUnit { get; set; }
+        public int? FollowUnit { get; set; }
 
         public string? FollowUnitValue { get; set; }
 
-        public int FollowBankAccount { get; set; }
+        public int? FollowBankAccount { get; set; }
 
-        public int FollowConstruction { get; set; }
+        public int? FollowConstruction { get; set; }
 
         public string? FollowConstructionValue { get; set; }
 
-        public int FollowSellContract { get; set; }
+        public int? FollowSellContract { get; set; }
 
         public string? FollowSellContractValue { get; set; }
 
-        public int FollowExpenseItem { get; set; }
+        public int? FollowExpenseItem { get; set; }
 
         public string? FollowExpenseItemValue { get; set; }
 
-        public int FollowStatisticalCode { get; set; }
+        public int? FollowStatisticalCode { get; set; }
 
         public string? FollowStatisticalCodeValue { get; set; }
 
@@ -78,7 +78,7 @@ namespace Demo.Webapi.Common.Entities
 
         public int DataLevel { get; set; }
 
-        public int AccountByException { get; set; }
+        public int? AccountByException { get; set; }
 
     }
 }

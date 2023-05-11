@@ -232,6 +232,33 @@ namespace Demo.Webapi.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Thu_chi_tien_mat.
+        /// </summary>
+        public static string paymentExcelFile {
+            get {
+                return ResourceManager.GetString("paymentExcelFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to THU CHI TIỀN MẶT.
+        /// </summary>
+        public static string paymentExcelSheet {
+            get {
+                return ResourceManager.GetString("paymentExcelSheet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to THU CHI TIỀN MẶT.
+        /// </summary>
+        public static string paymentExcelTitle {
+            get {
+                return ResourceManager.GetString("paymentExcelTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cập nhật không thành công.
         /// </summary>
         public static string updateFail {
@@ -264,6 +291,15 @@ namespace Demo.Webapi.Common {
         public static string userMsg_DuplicateEmployee {
             get {
                 return ResourceManager.GetString("userMsg.DuplicateEmployee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Số chứng từ đã tồn tại vui lòng kiểm tra lại.
+        /// </summary>
+        public static string userMsg_DuplicateReceiptPayment {
+            get {
+                return ResourceManager.GetString("userMsg.DuplicateReceiptPayment", resourceCulture);
             }
         }
         

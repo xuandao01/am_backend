@@ -75,7 +75,7 @@ namespace Demo.Webapi.DL.BaseDL
         /// <param name="id">id bản ghi cần tìm</param>
         /// <returns>Generic</returns>
         /// Xuân Đào (28/03/2023)
-        public T GetRecordById(Guid id);
+        public ServiceResult GetRecordById(Guid id);
 
         /// <summary>
         /// Lấy toàn bộ record

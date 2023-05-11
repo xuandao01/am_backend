@@ -23,7 +23,7 @@ namespace Demo.Webapi.Common.Entities
 
         public DateTime ca_date { get; set; }
 
-        public Guid? employee_id { get; set; }
+        public string? employee_id { get; set; }
 
         public DateTime? created_date { get; set; }
 

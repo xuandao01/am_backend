@@ -32,5 +32,55 @@ namespace Demo.Webapi.Common
             list.Add("Status");
             return list;
         }
+
+        public static List<String> AccountPropertyValue()
+        {
+            List<string> list = new List<string>();
+            list.Add("Dư nợ");
+            list.Add("Dư có");
+            list.Add("Lưỡng tính");
+            list.Add("Không có số dư");
+            return list;
+        }
+
+        public static List<String> AccountStatusValue()
+        {
+            List<string> list = new List<string>();
+            list.Add("Đang sử dụng");
+            list.Add("Ngưng sử dụng");
+            return list;
+        }
+
+        public static List<String> GetPaymentColName()
+        {
+            List<String> list = new List<string>();
+            list.Add("STT");
+            list.Add("Ngày hạch toán");
+            list.Add("Ngày chứng từ");
+            list.Add("Số chứng từ");
+            list.Add("Số tiền");
+            list.Add("Mã đối tượng");
+            list.Add("Đối tượng");
+            list.Add("Lý do thu/chi");
+            list.Add("Loại chứng từ");
+            list.Add("Hạch toán gộp nhiều hóa đơn");
+            return list;
+        }
+
+        public static List<String> GetPaymentModelName()
+        {
+            List<String> list = new List<string>();
+            list.Add("num");
+            list.Add("re_date");
+            list.Add("ca_date");
+            list.Add("re_ref_no");
+            list.Add("amount");
+            list.Add("supplier_code");
+            list.Add("supplier_name");
+            list.Add("re_reason");
+            list.Add("ca_type");
+            list.Add("multiple_payment");
+            return list;
+        }
     }
 }
