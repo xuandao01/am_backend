@@ -212,11 +212,6 @@ namespace Demo.Webapi.BLayer.BaseBL
             return _baseDL.UpdateRecord(id, record);
         }
 
-        public IEnumerable<dynamic> GetRecordByKeyword(string keyword)
-        {
-            return _baseDL.GetRecordByKeyword(keyword);
-        }
-
         public ServiceResult BulkCreate(IEnumerable<T> records)
         {
             return  _baseDL.BulkCreate(records);

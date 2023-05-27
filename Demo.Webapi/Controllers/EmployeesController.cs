@@ -20,41 +20,5 @@ namespace Demo.Webapi.Controllers
         {
             _employeeBL = employeeBL;
         }
-
-        [HttpGet("NewEmployeeCode")]
-        public string GetNewEmployeeCode()
-        {
-            return _employeeBL.GetNewEmployeeCode();
-        }
-
-        [HttpDelete("DeleteMultiple")]
-        public IActionResult DeleteMultiple([FromBody] string idList)
-        {
-            try
-            {
-                int result = _employeeBL.DeleteMultipleRecords(idList);
-                return StatusCode(200, new ServiceResult()
-                {
-                    IsSuccess = true,
-                    Message = "Xóa thành công",
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new ServiceResult()
-                {
-                    IsSuccess = false,
-                    Message = ex.Message,
-                    Data = new ErrorResult()
-                    {
-                        ErrorCode = ErrorCode.Exception,
-                        DevMsg = Resource.devMsg_Exception,
-                        UserMsg = Resource.userMsg_Exception,
-                        TraceId = HttpContext.TraceIdentifier
-                    }
-                });
-            }
-        }
-
     }
 }

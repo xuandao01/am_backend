@@ -130,5 +130,24 @@ namespace Demo.Webapi.Controllers
                 });
             }
         }
+
+        [HttpPut("UpdateAccountLevel")]
+        public IActionResult UpdateAccountLevel([FromBody]List<Account> accounts)
+        {
+            int result = _accountBL.UpdateAccountLevel(accounts);
+            if (result == 0)
+            {
+                return StatusCode(404, NotFound());
+            }
+            else
+            {
+                return StatusCode(200, new ServiceResult
+                {
+                    IsSuccess = true,
+                    Data = result,
+                    Message = Resource.updateSuccess,
+                });
+            }
+        }
     }
 }

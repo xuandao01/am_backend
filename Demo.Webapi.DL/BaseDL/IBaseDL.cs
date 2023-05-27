@@ -110,8 +110,6 @@ namespace Demo.Webapi.DL.BaseDL
         /// Xuân Đào (28/03/2023)
         public ServiceResult UpdateRecord(Guid id, T record);
 
-        public IEnumerable<dynamic> GetRecordByKeyword(string keyword);
-
         public ServiceResult BulkCreate(IEnumerable<T> RecordList);
 
     }

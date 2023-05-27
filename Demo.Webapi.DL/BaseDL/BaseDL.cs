@@ -23,63 +23,15 @@ namespace Demo.Webapi.DL.BaseDL
     public class BaseDL<T> : IBaseDL<T>
     {
         /// <summary>
-        /// Tạo mới bản ghi
+        /// Hàm thêm mới bản ghi
         /// </summary>
-        /// <param name="record">Thông tin bản ghi</param>
-        /// <returns>Service result</returns>
-        /// Xuân Đào (28/03/2023)
-        //public ServiceResult CreateRecord(T record)
-        //{
-        //    var properties = typeof(T).GetProperties();
-        //    string funcName = $"func_create_{typeof(T).Name}";
-        //    string funcParam = "";
-        //    foreach (var property in properties)
-        //    {
-        //        var value = property.GetValue(record);
-        //        var propName = property.Name;
-        //        if (property.Name == $"{typeof(T).Name}Id" || property.Name == "re_id")
-        //        {
-        //            Guid id = Guid.NewGuid();
-        //            funcParam += $"'{id}'";
-        //        }
-        //        else if (property.Name == "CreatedDate" || property.Name == "ModifiedDate")
-        //        {
-        //            funcParam += $",'{DateTime.Now}'";
-        //        }
-        //        else
-        //        {
-        //            if (property.PropertyType.Name.CompareTo("Int32") != 0)
-        //            {
-        //                funcParam += $",'{value}'";
-        //            } else
-        //            {
-        //                funcParam += $",{value}";
-        //            }
-        //        }
-        //    }
-        //    string queryString = $"select {funcName}({funcParam})";
-        //    var mysqlConnection = GetOpenConnection();
-        //    var result = QueryFirstOrDefault(mysqlConnection, queryString, commandType: CommandType.Text);
-        //    mysqlConnection.Close();
-        //    if (result == null)
-        //    {
-        //        return null;
-        //    }
-        //    else
-        //    {
-        //        return new ServiceResult()
-        //        {
-        //            IsSuccess = true,
-        //            Data = result,
-        //        };
-        //    }
-        //}
-
+        /// <param name="record">Bản ghi</param>
+        /// <author>Xuân Đào - 04/05/2023</author>
+        /// <returns></returns>
         public ServiceResult CreateRecord(T record)
         {
             try
             {
-
                 string queryString = $"insert into {typeof(T).Name}";
                 string colName = "(";
                 string colValue = "(";
@@ -150,6 +102,12 @@ namespace Demo.Webapi.DL.BaseDL
             }
         }
 
+        /// <summary>
+        /// Hàm thêm mới hàng loạt bản ghi
+        /// </summary>
+        /// <param name="RecordList">Danh sách bản ghi</param>
+        /// <author>Xuân Đào - 04/05/2023</author>
+        /// <returns></returns>
         public ServiceResult BulkCreate(IEnumerable<T> RecordList)
         {
             try
@@ -263,6 +221,12 @@ namespace Demo.Webapi.DL.BaseDL
             }
         }
 
+        /// <summary>
+        /// Hàm xóa hàng loạt bản ghi
+        /// </summary>
+        /// <param name="recordIds">Danh sách id bản ghi</param>
+        /// <author>Xuân Đào 11/05/2023</author>
+        /// <returns></returns>
         public int MultipleDeleteRecord(string recordIds)
         {
             using (var mysqlConnection = GetOpenConnection())
@@ -332,13 +296,6 @@ namespace Demo.Webapi.DL.BaseDL
                 string orderOption = "created_date desc";
                 string whereOption = "";
                 string getTotalRecord = $"select count(*) as \"Total record\" from {typeof(T).Name};";
-                if (typeof(T).Name == "receipt_payment")
-                {
-                    selectOption = "*, (select sum(rpd.amount) as \"total_amount\" from receipt_payment_detail rpd where rpd.rp_id = re_id)";
-                    joinOption = "left join supplier on account_id = supplier_id left join employee on cast(employee.employeeid as text) = receipt_payment.employee_id";
-                    optionalQuery = "select sum(rpd.amount) from receipt_payment_detail rpd;";
-                    orderOption = "re_ref_no desc";
-                }
                 if (keyWord != null && keyWord.Length > 0)
                 {
                     var properties = typeof(T).GetProperties();
@@ -351,8 +308,24 @@ namespace Demo.Webapi.DL.BaseDL
                             whereOption += $" or cast({typeof(T).Name}.{property.Name} as text) ilike '%{keyWord}%'";
                         i++;
                     }
-                    optionalQuery = "select sum(receipt_payment_detail.amount) from receipt_payment_detail inner join receipt_payment on rp_id = re_id " + whereOption;
                     getTotalRecord = $"select count(*) as \"Total record\" from {typeof(T).Name} {whereOption};";
+                }
+                if (typeof(T).Name == "receipt_payment")
+                {
+                    selectOption = "*, (select sum(rpd.amount) as \"total_amount\" from receipt_payment_detail rpd where rpd.rp_id = re_id)";
+                    joinOption = "left join supplier on account_id = supplier_id left join employee on cast(employee.employeeid as text) = receipt_payment.employee_id";
+                    orderOption = "re_ref_no desc";
+                    if (keyWord != null && keyWord.Length > 0)
+                    {
+                        whereOption = $"where cast (ca_date as text) ilike '%{keyWord}%' or cast (re_date as text) ilike '%{keyWord}%' or cast (re_ref_no as text) ilike '%{keyWord}%'  or cast (re_description as text) ilike '%{keyWord}%' " +
+                            $" or cast (supplier.supplier_name as text) ilike '%{keyWord}%' or cast (supplier.supplier_code as text) ilike '%{keyWord}%' or cast (ca_type as text) ilike '%{keyWord}%' or cast (re_reason as text) ilike '%{keyWord}%'";
+                    }
+                    optionalQuery = "select sum(rpd.amount) from receipt_payment_detail rpd left join receipt_payment on rpd.rp_id = receipt_payment.re_id left join supplier on account_id = supplier_id " + whereOption + ";";
+                    getTotalRecord = $"select count(*) as \"Total record\" from receipt_payment left join supplier on account_id = supplier_id {whereOption};";
+                }
+                if (typeof(T).Name == "Supplier")
+                {
+                    orderOption = "supplier_code desc";
                 }
                 string queryString = $"select {selectOption} from {typeof(T).Name} {joinOption} {whereOption} order by {typeof(T).Name}.{orderOption} limit {pageSize} offset {offset};";
                 var sqlConection = GetOpenConnection();
@@ -418,12 +391,14 @@ namespace Demo.Webapi.DL.BaseDL
             // Chuẩn bị tên stored
             string idField = $"{typeof(T).Name}_id";
             string joinOption = "";
+            string selectOption = "*";
             if (typeof(T).Name == "receipt_payment")
             {
                 idField = "re_id";
                 joinOption = "left join supplier on account_id = supplier_id left join employee on cast(employee.employeeid as text) = receipt_payment.employee_id";
+                selectOption = "*, supplier.address";
             }
-            string queryString = $"Select * from {typeof(T).Name} {joinOption} where {idField} = '{id}'";
+            string queryString = $"Select {selectOption} from {typeof(T).Name} {joinOption} where {idField} = '{id}'";
             // Kết nối tới db
             var mySqlConnection = GetOpenConnection();
             // Thực hiện gọi vào db chạy proc
@@ -452,7 +427,7 @@ namespace Demo.Webapi.DL.BaseDL
                 string orderBy = "created_date";
                 string orderSort = "desc";
                 if (typeof(T).Name == "Account") { 
-                    orderBy = "datalevel asc, accountnumber ";
+                    orderBy = "datalevel asc, accountnumber::text ";
                     orderSort = "asc";
                 } 
                 string queryString = $"select *, (select count (*) as \"total_record\" from {typeof(T).Name}) from {typeof(T).Name} order by {orderBy} {orderSort}";
@@ -556,7 +531,7 @@ namespace Demo.Webapi.DL.BaseDL
                         {
                             if (propName == "ModifiedDate" || propName == "modified_date")
                             {
-                                excuteString += "," + $"{propName}" + "=" + $"'{new DateTime()}'";
+                                excuteString += "," + $"{propName}" + "=" + $"'{DateTime.Now}'";
                             }
                             else if (propName != "Created_Date" && propName != "Created_By" && propName != "CreatedBy")
                             {
@@ -575,7 +550,7 @@ namespace Demo.Webapi.DL.BaseDL
             mysqlConnection.Close();
             if (result == 0)
             {
-                return null;
+                return new ServiceResult { IsSuccess = false};
             }
             else
             {
@@ -588,6 +563,12 @@ namespace Demo.Webapi.DL.BaseDL
             }
         }
 
+        /// <summary>
+        /// Hàm lấy toàn bộ dữ liệu theo keyword phục vụ xuất excel
+        /// </summary>
+        /// <param name="keyword">Từ khóa</param>
+        /// <author>Xuân Đào 01/05/2023</author>
+        /// <returns></returns>
         public IEnumerable<dynamic> getAllByKeyword(string keyword)
         {
             // Chuẩn bị tên stored
@@ -596,7 +577,7 @@ namespace Demo.Webapi.DL.BaseDL
             int? offset = 0;
             var param = new DynamicParameters();
             param.Add("keyWord", keyword);
-            param.Add("pageSize", 999);
+            param.Add("pageSize", 25);
             param.Add("offset", offset);
             // Kết nối tới db
             var mySqlConnection = GetOpenConnection();
@@ -606,17 +587,5 @@ namespace Demo.Webapi.DL.BaseDL
             return result;
 
         }
-
-        public IEnumerable<dynamic> GetRecordByKeyword(string keyword)
-        {
-            string procName = $"Proc_GetEmployeeByKeyword";
-            var param = new DynamicParameters();
-            param.Add("keyword", keyword);
-            var mySqlConnection = GetOpenConnection();
-            var result = mySqlConnection.Query(procName, param, commandType: CommandType.StoredProcedure);
-            mySqlConnection.Close();
-            return result;
-        }
-
     }
 }

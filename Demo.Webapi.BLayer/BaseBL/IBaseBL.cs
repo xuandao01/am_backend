@@ -59,8 +59,6 @@ namespace Demo.Webapi.BLayer.BaseBL
         /// <returns></returns>
         public ServiceResult UpdateRecord(Guid id, T record);
 
-        public IEnumerable<dynamic> GetRecordByKeyword(string keyword);
-
         public ServiceResult BulkCreate(IEnumerable<T> records);
 
     }

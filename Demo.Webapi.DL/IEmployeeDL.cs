@@ -19,6 +19,11 @@ namespace Demo.Webapi.DL
         /// Xuân Đào (26/03/2023)
         public string GetNewEmployeeCode();
 
+        /// <summary>
+        /// Hàm xóa hàng loạt
+        /// </summary>
+        /// <returns>Số bản ghi bị xóa</returns>
+        /// Xuân Đào (26/03/2023)
         public int DeleteMultipleRecords(string idList);
     }
 }

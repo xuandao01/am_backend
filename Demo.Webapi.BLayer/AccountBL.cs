@@ -25,9 +25,27 @@ namespace Demo.Webapi.BLayer
             _accountDL = accountDL;
         }
 
+        /// <summary>
+        /// Cập nhật trạng thái cho danh sách tài khoản
+        /// </summary>
+        /// <param name="ids">danh sách id</param>
+        /// <param name="newStatus">trạng thái mới</param>
+        /// <author>Xuân Đào 27/04/2023</author>
+        /// <returns></returns>
         public int UpdateMultipleStatus(string ids, int newStatus)
         {
             return _accountDL.UpdateMultipleStatus(ids, newStatus);
+        }
+
+        /// <summary>
+        /// Cập nhật level tài khoản
+        /// </summary>
+        /// <param name="accounts">danh sách tài khoản</param>
+        /// <author>Xuân Đào 27/04/2023</author>
+        /// <returns></returns>
+        public int UpdateAccountLevel(List<Account> accounts)
+        {
+            return _accountDL.UpdateAccountLevel(accounts);
         }
     }
 }

@@ -218,6 +218,12 @@ namespace Demo.Webapi.Controllers
             }
         }
 
+        /// <summary>
+        /// Hàm xóa hàng loạt
+        /// </summary>
+        /// <param name="recordIds">Danh sách id</param>
+        /// <author>Xuân Đào - 02/05/2023</author>
+        /// <returns></returns>
         [HttpDelete]
         [Route("MultipleDelete")]
         public IActionResult MultipleDelete([FromQuery]string recordIds)

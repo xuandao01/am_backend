@@ -19,6 +19,12 @@ namespace Demo.Webapi.Controllers
             _receiptPaymentDetailBL = receiptPaymentDetailBL;
         }
 
+        /// <summary>
+        /// Hàm lấy danh sách detail theo id chứng từ
+        /// </summary>
+        /// <param name="re_id">id chứng từ</param>
+        /// <author>Xuân Đào 25/04/2023</author>
+        /// <returns></returns>
         [HttpGet("GetAllByReId")]
         public IActionResult GetAllByReId([FromQuery] Guid re_id)
         {
@@ -26,6 +32,30 @@ namespace Demo.Webapi.Controllers
             if (result != null)
             {
                 return StatusCode(200, result);
+            } else
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
+        /// Hàm cập nhật chi tiết chứng từ theo id
+        /// </summary>
+        /// <param name="re_id">id chứng từ</param>
+        /// <param name="records">Danh sách detail</param>
+        /// <author>Xuân Đào 25/04/2023</author>
+        /// <returns></returns>
+        [HttpPut("UpdateMultiple")]
+        public IActionResult UpdateMultiple([FromQuery] Guid re_id, [FromBody]IEnumerable<receipt_payment_detail> records)
+        {
+            var result = _receiptPaymentDetailBL.UpdateMultiple(re_id, records);
+            if (result != null) { 
+                return StatusCode(200, new ServiceResult
+                {
+                    IsSuccess= true,
+                    Message=Resource.updateSuccess,
+                    Data=result,
+                });
             } else
             {
                 return NotFound();

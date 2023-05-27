@@ -12,7 +12,7 @@ namespace Demo.Webapi.Common.Entities
 
         public Guid rp_id { get; set; }
 
-        public string rpd_description { get; set; }
+        public string? rpd_description { get; set; }
 
         public string debit_account { get; set; }
 
@@ -20,7 +20,7 @@ namespace Demo.Webapi.Common.Entities
 
         public int? amount { get; set; }
 
-        public Guid object_id { get; set; }
+        public Guid? object_id { get; set; }
 
         public DateTime? created_date { get; set; }
 
