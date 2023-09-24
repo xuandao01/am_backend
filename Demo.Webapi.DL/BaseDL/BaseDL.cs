@@ -40,6 +40,22 @@ namespace Demo.Webapi.DL.BaseDL
                 int i = 0;
                 foreach (var property in properties)
                 {
+                    var value = property.GetValue(record);
+                    if (property.PropertyType.Name == "Nullable`1" && property.PropertyType.FullName.Contains("DateTime"))
+                    {
+                        if (property.Name == "created_date")
+                        {
+                            value = DateTime.Now;
+                        }
+                        if (value != null)
+                        {
+                            DateTime dateTime = (DateTime)value;
+                            string day = dateTime.Day > 10 ? dateTime.Day.ToString() : "0"+ dateTime.Day.ToString();
+                            string month = dateTime.Month > 10 ? dateTime.Month.ToString() : "0"+ dateTime.Month.ToString();
+                            string year = dateTime.Year.ToString();
+                            value = $"{year}/{month}/{day}";
+                        }
+                    }
                     if (i != properties.Length - 1)
                     {
                         colName += property.Name + ',';
@@ -49,31 +65,32 @@ namespace Demo.Webapi.DL.BaseDL
                         }
                         else
                         {
-                            if (property.GetValue(record) == null)
+                            if (value == null)
                             {
                                 colValue += "null" + ',';
                             } 
                             else
                             {
                                 if (property.PropertyType.Name.CompareTo("Int32") != 0)
-                                    colValue += $"'{property.GetValue(record).ToString()}'" + ',';
+                                    colValue += $"'{value}'" + ',';
                                 else 
-                                    colValue += property.GetValue(record).ToString() + ',';
+                                    colValue += $"{value}" + ',';
                             }
                         }
-                    } else
+                    } 
+                    else
                     {
                         colName += property.Name + ')';
-                        if (property.GetValue(record) == null)
+                        if (value == null)
                         {
                             colValue += "null" + ')';
                         }
                         else
                         {
                             if (property.PropertyType.Name.CompareTo("Int32") != 0)
-                                colValue += $"'{property.GetValue(record).ToString()}'" + ')';
+                                colValue += $"'{value}'" + ')';
                             else
-                                colValue += property.GetValue(record).ToString() + ')';
+                                colValue += $"{value})";
                         }
                     }
                     i++;
@@ -205,7 +222,7 @@ namespace Demo.Webapi.DL.BaseDL
             try
             {
                 // Chuẩn bị query string
-                string queryString = $"Delete from {typeof(T).Name} where {typeof(T).Name}.{typeof(T).Name}id = '{recordId}'";
+                string queryString = $"Delete from {typeof(T).Name} where {typeof(T).Name}ID = '{recordId}'";
                 // Kết nối tới db
                 var mySqlConection = GetOpenConnection();
                 // Thực hiện query
@@ -244,7 +261,7 @@ namespace Demo.Webapi.DL.BaseDL
                             if (i == 0) param += $"'{list[i]}'";
                             else param += $", '{list[i]}'";
                         }
-                        string queryString = $"Select {funcName}(array[{param}])";
+                        string queryString = $"Delete from {typeof(T).Name.ToLower()} where {typeof(T).Name.ToLower()}id = ANY(array[{param}])";
                         int result = Execute(mySqlConnection, queryString, commandType: CommandType.Text);
                         transaction.Commit();
                         return result;
@@ -286,8 +303,6 @@ namespace Demo.Webapi.DL.BaseDL
         {
             try
             {
-                // Chuẩn bị procedure name
-                //string func_name = $"func_filter_{typeof(T).Name}";
                 int? offset = (pageSize * pageNumber) - pageSize;
                 keyWord ??= "";
                 string selectOption = "*";
@@ -327,7 +342,7 @@ namespace Demo.Webapi.DL.BaseDL
                 {
                     orderOption = "supplier_code desc";
                 }
-                string queryString = $"select {selectOption} from {typeof(T).Name} {joinOption} {whereOption} order by {typeof(T).Name}.{orderOption} limit {pageSize} offset {offset};";
+                string queryString = $"select {selectOption} from {typeof(T).Name.ToLower()} {joinOption} {whereOption} order by {orderOption} limit {pageSize} offset {offset};";
                 var sqlConection = GetOpenConnection();
                 // Thực hiện truy vấn
                 string excuteQuery = queryString + getTotalRecord;
@@ -378,6 +393,7 @@ namespace Demo.Webapi.DL.BaseDL
             mySqlConnection.Open();
             return mySqlConnection;
         }
+
 
         /// <summary>
         /// Tìm kiếm bản ghi theo id
@@ -430,7 +446,7 @@ namespace Demo.Webapi.DL.BaseDL
                     orderBy = "datalevel asc, accountnumber::text ";
                     orderSort = "asc";
                 } 
-                string queryString = $"select *, (select count (*) as \"total_record\" from {typeof(T).Name}) from {typeof(T).Name} order by {orderBy} {orderSort}";
+                string queryString = $"select *, (select count(*) from {typeof(T).Name.ToLower()}) as \"Total record\" from {typeof(T).Name} order by {orderBy} {orderSort}";
                 // Kết nối tới db
                 var mySqlConnection = GetOpenConnection();
                 // Thực hiện gọi vào db chạy proc

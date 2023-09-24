@@ -28,5 +28,7 @@ namespace Demo.Webapi.DL
         /// <author>Xuân Đào 10/05/2023</author>
         /// <returns></returns>
         public int UpdateAccountLevel(List<Account> accounts);
+
+        public object Login(string username, string password);
     }
 }

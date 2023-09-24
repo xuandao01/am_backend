@@ -28,5 +28,7 @@ namespace Demo.Webapi.BLayer
         /// <author>Xuân Đào 27/04/2023</author>
         /// <returns></returns>
         public int UpdateAccountLevel(List<Account> accounts);
+
+        public object Login(string username, string password);
     }
 }

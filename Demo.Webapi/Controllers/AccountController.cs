@@ -84,14 +84,6 @@ namespace Demo.Webapi.Controllers
                         {
                             workSheet.Cells[i + 4, j].Style.Font.Bold = true;
                         }
-                        if (cell == "Property")
-                        {
-                            workSheet.Cells[i + 4, j].Value = propertyName[accounts[i].Property];
-                        }
-                        else if (cell == "Status")
-                        {
-                            workSheet.Cells[i + 4, j].Value = statusName[accounts[i].Status];
-                        }
                         else
                         {
                             workSheet.Cells[i + 4, j].Value = accounts[i].GetType().GetProperty(cell).GetValue(accounts[i]);
@@ -148,6 +140,13 @@ namespace Demo.Webapi.Controllers
                     Message = Resource.updateSuccess,
                 });
             }
+        }
+
+        [HttpGet("Login")]
+        public IActionResult Login(string username, string password)
+        {
+            var result = _accountBL.Login(username, password);
+            return StatusCode(200, result);
         }
     }
 }

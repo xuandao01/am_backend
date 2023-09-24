@@ -723,11 +723,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\txdao\\source\\repos\\Demo.Webapi\\Demo.Webapi.Common\\Demo.Webapi.Common.csproj",
+      "projectUniqueName": "C:\\Users\\txdao\\source\\repos\\EMS\\Demo.Webapi.Common\\Demo.Webapi.Common.csproj",
       "projectName": "Demo.Webapi.Common",
-      "projectPath": "C:\\Users\\txdao\\source\\repos\\Demo.Webapi\\Demo.Webapi.Common\\Demo.Webapi.Common.csproj",
+      "projectPath": "C:\\Users\\txdao\\source\\repos\\EMS\\Demo.Webapi.Common\\Demo.Webapi.Common.csproj",
       "packagesPath": "C:\\Users\\txdao\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\txdao\\source\\repos\\Demo.Webapi\\Demo.Webapi.Common\\obj\\",
+      "outputPath": "C:\\Users\\txdao\\source\\repos\\EMS\\Demo.Webapi.Common\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\txdao\\AppData\\Roaming\\NuGet\\NuGet.Config",

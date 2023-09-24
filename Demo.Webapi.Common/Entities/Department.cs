@@ -4,12 +4,12 @@ public class Department
     /// <summary>
     /// Id phòng ban
     /// </summary>
-    public Guid DepartmentId { get; set; }
+    public Guid DepartmentID { get; set; }
 
     /// <summary>
     /// Tên phòng ban
     /// </summary>
-    public string DepartmentName { get; set; }
+    public string? DepartmentName { get; set; }
 
     /// <summary>
     /// Mã phòng ban
@@ -19,26 +19,26 @@ public class Department
     /// <summary>
     /// Mô tả
     /// </summary>
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     /// <summary>
     /// Ngày tạo
     /// </summary>
-    public DateTime CreatedDate { get; set; }
+    public DateTime? CreatedAt { get; set; }
 
     /// <summary>
     /// Người tạo
     /// </summary>
-    public string CreatedBy { get; set; }
+    public string? CreatedBy { get; set; }
 
     /// <summary>
     /// Ngày sửa 
     /// </summary>
-    public DateTime ModifiedDate { get; set; }
+    public DateTime? ModifiedAt { get; set; }
 
     /// <summary>
     /// Người sửa
     /// </summary>
-    public string ModifiedBy { get; set; }
+    public string? ModifiedBy { get; set; }
 }
 

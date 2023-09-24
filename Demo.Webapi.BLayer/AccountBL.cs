@@ -47,5 +47,10 @@ namespace Demo.Webapi.BLayer
         {
             return _accountDL.UpdateAccountLevel(accounts);
         }
+
+        public object Login(string username, string password)
+        {
+            return _accountDL.Login(username, password);
+        }
     }
 }

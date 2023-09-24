@@ -23,11 +23,6 @@ namespace Demo.Webapi.Controllers
             _receiptPaymentBL = receiptPaymentBL;
         }
 
-        /// <summary>
-        /// Hàm lấy số chứng từ mới
-        /// </summary>
-        /// <author>Xuân Đào - 02/05/2023</author>
-        /// <returns></returns>
         [HttpGet("GetNewCode")]
         public IActionResult GetNewCode()
         {
@@ -46,16 +41,12 @@ namespace Demo.Webapi.Controllers
             }
         }
 
-        /// <summary>
-        /// Xóa toàn bộ chứng từ kèm detail
-        /// </summary>
-        /// <param name="id">id chứng từ</param>
-        /// <returns></returns>
         [HttpDelete("FullDelete")]
         public IActionResult FullDelete([FromQuery] string id)
         {
             int result = _receiptPaymentBL.DeleteFullPayment(id);
-            if (result == 1) {
+            if (result == 1)
+            {
                 return StatusCode(200, new ServiceResult
                 {
                     IsSuccess = true,
@@ -65,18 +56,13 @@ namespace Demo.Webapi.Controllers
             }
             else
             {
-                return StatusCode (400, new ServiceResult { IsSuccess = false });
+                return StatusCode(400, new ServiceResult { IsSuccess = false });
             }
         }
 
-        /// <summary>
-        /// Hàm xuất dữ liệu ra excel
-        /// </summary>
-        /// <param name="widthList">Danh sách độ rộng cột</param>
-        /// <param name="keyword">Từ khóa nếu có</param>
-        /// <returns></returns>
         [HttpGet("ExcelExport")]
-        public IActionResult ExcelExport([FromQuery] string widthList, [FromQuery]string? keyword) {
+        public IActionResult ExcelExport([FromQuery] string widthList, [FromQuery] string? keyword)
+        {
             var stream = new MemoryStream();
 
             string[] width = widthList.Split(",");
@@ -130,11 +116,11 @@ namespace Demo.Webapi.Controllers
                         workSheet.Cells[i, j].Style.Font.Name = "Times New Roman";
                         workSheet.Cells[i, j].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Left;
                         workSheet.Cells[i, j].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                        if (j == 2 || j == 3 || j == 1)
+                        if (j == 2 || j == 3)
                             workSheet.Cells[i, j].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        if (j == 6)
+                        if (j == 5)
                             workSheet.Cells[i, j].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
-                        switch(cell)
+                        switch (cell)
                         {
                             case "num":
                                 {
@@ -144,31 +130,18 @@ namespace Demo.Webapi.Controllers
                             case "re_date":
                                 {
                                     if (cellValue.re_date != null)
-                                    {
-                                        string dayVal = cellValue.re_date.Day < 10 ? "0" + cellValue.re_date.Day : "" + cellValue.re_date.Day;
-                                        string monthVal = cellValue.re_date.Month < 10 ? "0" + cellValue.re_date.Month : "" + cellValue.re_date.Month;
-                                        workSheet.Cells[i, j].Value = $"{dayVal}/{monthVal}/{cellValue.re_date.Year}";
-                                    }
+                                        workSheet.Cells[i, j].Value = $"{cellValue.re_date.Day}/{cellValue.re_date.Month}/{cellValue.re_date.Year}";
                                     break;
                                 }
                             case "ca_date":
                                 {
                                     if (cellValue.ca_date != null)
-                                    {
-                                        string dayVal = cellValue.ca_date.Day < 10 ? "0" + cellValue.ca_date.Day : "" + cellValue.ca_date.Day;
-                                        string monthVal = cellValue.ca_date.Month < 10 ? "0" + cellValue.ca_date.Month : "" + cellValue.ca_date.Month;
-                                        workSheet.Cells[i, j].Value = $"{dayVal}/{monthVal}/{cellValue.ca_date.Year}";
-                                    }
+                                        workSheet.Cells[i, j].Value = $"{cellValue.ca_date.Day}/{cellValue.ca_date.Month}/{cellValue.ca_date.Year}";
                                     break;
                                 }
                             case "re_ref_no":
                                 {
                                     workSheet.Cells[i, j].Value = cellValue.re_ref_no;
-                                    break;
-                                }
-                            case "re_description":
-                                {
-                                    workSheet.Cells[i, j].Value = cellValue.re_description;
                                     break;
                                 }
                             case "amount":
@@ -203,9 +176,9 @@ namespace Demo.Webapi.Controllers
                                             workSheet.Cells[i, j].Value = "Phiếu chi";
                                         else
                                             workSheet.Cells[i, j].Value = "Phiếu thu";
-                                    } 
+                                    }
                                     else
-                                        workSheet.Cells[i, j].Value = "Phiếu chi";
+                                        workSheet.Cells[i, j].Value = "";
                                     break;
                                 }
                         }
@@ -214,16 +187,16 @@ namespace Demo.Webapi.Controllers
                     i++;
                 }
                 workSheet.Row(i).Style.Font.Bold = true;
-                for(int j=1;j<=dataList.Count;j++)
+                for (int j = 1; j <= dataList.Count; j++)
                 {
                     workSheet.Cells[i, j].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    workSheet.Cells[i,j].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(255, 212, 212, 212));
+                    workSheet.Cells[i, j].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(255, 212, 212, 212));
                     workSheet.Cells[i, j].Style.Border.BorderAround(ExcelBorderStyle.Thin);
                 }
                 workSheet.Cells[i, 2].Value = "Tổng";
                 workSheet.Cells[i, 2].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                workSheet.Cells[i, 6].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
-                workSheet.Cells[i, 6].Value = total_amount.ToString("#,##0");
+                workSheet.Cells[i, 5].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
+                workSheet.Cells[i, 5].Value = total_amount.ToString("#,##0");
                 package.Save();
             }
 
@@ -232,12 +205,6 @@ namespace Demo.Webapi.Controllers
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileNameExport);
         }
 
-        /// <summary>
-        /// Hàm lấy dữ liệu theo từ khóa
-        /// </summary>
-        /// <param name="keyword">Từ khóa</param>
-        /// <author>Xuân Đào 27/04/2023</author>
-        /// <returns></returns>
         [HttpGet("GetAllByKeyword")]
         public IActionResult GetAllWithKeyword([FromQuery] string? keyword)
         {
@@ -247,48 +214,6 @@ namespace Demo.Webapi.Controllers
                 return StatusCode(StatusCodes.Status404NotFound);
             }
             else
-            {
-                return StatusCode(200, result);
-            }
-        }
-
-        /// <summary>
-        /// Hàm xóa hàng loạt chứng từ
-        /// </summary>
-        /// <param name="ids">Danh sách id</param>
-        /// <author>Xuân Đào 27/04/2023</author>
-        /// <returns></returns>
-        [HttpDelete("DeleteMultiple")]
-        public IActionResult DeleteMultiple(string[]? ids)
-        {
-            int result = _receiptPaymentBL.DeleteFullMultiple(ids);
-            if (result > 0) return StatusCode(200, new ServiceResult
-            {
-                IsSuccess = true,
-                Message = Resource.deleteSuccess,
-                Data = result,
-            });
-            else return StatusCode(400, new ServiceResult
-            {
-                IsSuccess = false,
-            });
-        }
-
-        /// <summary>
-        /// Hàm cập nhật chứng từ kèm detail
-        /// </summary>
-        /// <param name="record">Chứng từ</param>
-        /// <param name="rpds">Danh sách chi tiết</param>
-        /// <author>Xuân Đào 27/04/2023</author>
-        /// <returns></returns>
-        [HttpPut("UpdateFullPayment")]
-        public IActionResult UpdateFullPayment([FromQuery]receipt_payment record, [FromBody]receipt_payment_detail[]? rpds)
-        {
-            var result = _receiptPaymentBL.UpdateFullPayment(record, rpds);
-            if (result == null)
-            {
-                return StatusCode(404, NotFound());
-            } else
             {
                 return StatusCode(200, result);
             }

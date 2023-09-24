@@ -53,7 +53,7 @@ namespace Demo.Webapi.DL
             string account_ids = "";
             for (int i = 0;i < accounts.Count;i++)
             {
-                queryString += " when accountid = " + accounts[i].AccountId + " then " + accounts[i].DataLevel;
+                queryString += "";
                 if (i == 0)
                 {
                     account_ids += $"'{accounts[i].AccountId}'";
@@ -69,6 +69,45 @@ namespace Demo.Webapi.DL
             sqlConnection.Close();
             return result;
 
+        }
+
+        public object Login(string username, string password)
+        {
+            string queryString = $"select * from account a where a.Username = '{username}' and a.password = '{password}'";
+            var sqlConnection = GetOpenConnection();
+            var result = sqlConnection.Query<dynamic>(queryString, commandType: CommandType.Text);
+            if (result.Count() != 0)
+            {
+                return new
+                {
+                    Success = true,
+                    UsernameExac = true,
+                    Data = result
+                };
+            } 
+            else
+            {
+                string queryString2 = $"select * from account a where a.Username = '{username}'";
+                var result2 = sqlConnection.Query<dynamic>(queryString2, commandType: CommandType.Text);
+                if (result2.Count() !=0)
+                {
+                    return new
+                    {
+                        Success = false,
+                        UsernameExac = true,
+                        Data = "",
+                    };
+                }
+                else
+                {
+                    return new
+                    {
+                        Success = false,
+                        UsernameExac = false,
+                        Data = "",
+                    };
+                }
+            }
         }
     }
 }
