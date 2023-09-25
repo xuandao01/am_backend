@@ -389,7 +389,7 @@ namespace Demo.Webapi.DL.BaseDL
         /// Xuân Đào (28/03/2023)
         public IDbConnection GetOpenConnection()
         {
-            var mySqlConnection = new NpgsqlConnection(DatabaseContext.connectionString);
+            var mySqlConnection = new NpgsqlConnection("Host=ep-jolly-unit-97576361.ap-southeast-1.aws.neon.tech;Username=xuandao9876;Password=Qq8pD0UdnfiS;Database=neondb;");
             mySqlConnection.Open();
             return mySqlConnection;
         }
