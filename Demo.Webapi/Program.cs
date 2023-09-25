@@ -33,7 +33,7 @@ builder.Services.AddScoped<IReceiptPaymentDetailDL, ReceiptPaymentDetailDL>();
 builder.Services.AddScoped<IReceiptPaymentBL, ReceiptPaymentBL>();
 builder.Services.AddScoped<IReceiptPaymentDL, ReceiptPaymentDL>();
 
-DatabaseContext.connectionString = builder.Configuration.GetConnectionString("PostgreSql");
+DatabaseContext.connectionString = builder.Configuration.GetConnectionString("PostgreSqlProduction");
 
 var app = builder.Build();
 
