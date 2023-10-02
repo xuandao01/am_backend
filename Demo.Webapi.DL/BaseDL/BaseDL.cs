@@ -50,8 +50,8 @@ namespace Demo.Webapi.DL.BaseDL
                         if (value != null)
                         {
                             DateTime dateTime = (DateTime)value;
-                            string day = dateTime.Day > 10 ? dateTime.Day.ToString() : "0"+ dateTime.Day.ToString();
-                            string month = dateTime.Month > 10 ? dateTime.Month.ToString() : "0"+ dateTime.Month.ToString();
+                            string day = dateTime.Day >= 10 ? dateTime.Day.ToString() : "0"+ dateTime.Day.ToString();
+                            string month = dateTime.Month >= 10 ? dateTime.Month.ToString() : "0"+ dateTime.Month.ToString();
                             string year = dateTime.Year.ToString();
                             value = $"{year}/{month}/{day}";
                         }
