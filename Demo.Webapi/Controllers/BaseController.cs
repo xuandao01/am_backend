@@ -8,6 +8,7 @@ using Demo.Webapi.Common.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
+using OfficeOpenXml.DataValidation;
 using OfficeOpenXml.Style;
 using System.Drawing;
 
@@ -19,7 +20,7 @@ namespace Demo.Webapi.Controllers
     {
         #region Field
 
-        private IBaseBL<T> _baseBL;
+        protected IBaseBL<T> _baseBL;
         public ErrorResult _exceptionResult = new ErrorResult(ErrorCode.Exception, Resource.devMsg_Exception, Resource.userMsg_Exception, "More Infor: ");
 
         #endregion
